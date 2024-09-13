@@ -1,1 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobile Responsive Page</title>
+  <style>
+    /* Set base font size for mobile devices */
+    body {
+      font-size: 16px; /* You can adjust this as needed */
+      margin: 0;
+      padding: 0;
+      line-height: 1.5;
+      font-family: Arial, sans-serif;
+    }
 
+    /* Use percentage for widths to make elements responsive */
+    .container {
+      width: 100%;
+      max-width: 100%; /* Prevents the container from going too wide */
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    /* Example of responsive elements */
+    h1 {
+      font-size: 2em; /* Relative to the base font size */
+    }
+
+    p {
+      font-size: 1em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Responsive Design for Mobile</h1>
+    <p>This page adjusts to mobile screen sizes.</p>
+  </div>
+</body>
+</html>
