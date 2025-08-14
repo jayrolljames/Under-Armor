@@ -1,181 +1,302 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Resume</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
-      margin: 0;
-      padding: 0;
-      background: #f4f4f4;
-      color: #333;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Command Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500&family=Roboto:wght@400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+/* ---------- Base ---------- */
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:'Roboto', sans-serif;
+  background:#0b0c1b;
+  color:#00eaff;
+  overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none;}
+ul{list-style:none;}
 
-    .container {
-      width: 80%;
-      max-width: 1000px;
-      margin: 2rem auto;
-      background: #fff;
-      padding: 2rem;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      border-radius: 10px;
-    }
+/* ---------- Navbar ---------- */
+nav{
+  position:fixed;
+  top:0;
+  width:100%;
+  background:rgba(38,0,74,0.9);
+  padding:1rem 2rem;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  z-index:1000;
+  font-family:'Rajdhani', sans-serif;
+}
+nav .logo{font-size:1.5rem;font-weight:bold;color:#ff007f;}
+nav ul{display:flex;gap:2rem;}
+nav ul li{cursor:pointer;transition:.3s;}
+nav ul li:hover{color:#00eaff;}
 
-    .header {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
+/* ---------- Header ---------- */
+header{
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  flex-direction:column;
+  position:relative;
+  overflow:hidden;
+}
+.header-title{
+  font-family:'Rajdhani', sans-serif;
+  font-size:4rem;
+  color:#26004a;
+  text-transform:uppercase;
+  letter-spacing:2px;
+  animation:flicker 2s infinite;
+}
+.typed-text::after{content:'|';animation:blink .7s infinite;}
+header p{margin-top:1rem;color:#888;font-size:1.2rem;}
 
-    .header h1 {
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
-    }
+/* ---------- Background Particles ---------- */
+#particles {
+  position:absolute;
+  top:0; left:0; width:100%; height:100%; z-index:0;
+}
+.particle {
+  position:absolute;
+  width:2px; height:2px;
+  background:#26004a;
+  opacity:0.7;
+  border-radius:50%;
+  animation: floatParticle 20s linear infinite;
+}
+@keyframes floatParticle {
+  0% {transform: translateY(0px) translateX(0px);}
+  100% {transform: translateY(-1000px) translateX(50px);}
+}
 
-    .header p {
-      font-size: 1.2rem;
-      margin: 0;
-    }
+/* ---------- Dashboard Panels ---------- */
+.dashboard{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:1.5rem;
+  padding:6rem 2rem 3rem 2rem;
+  position:relative;
+  z-index:1;
+}
+.panel{
+  background:rgba(38,0,74,0.5);
+  padding:2rem;
+  border-radius:12px;
+  box-shadow:0 0 15px #26004a50,0 0 30px #ff007f30;
+  transition:.3s;
+  border:2px solid #26004a;
+  animation: neonPulse 3s infinite alternate;
+}
+.panel:hover{
+  transform:translateY(-5px);
+  box-shadow:0 0 30px #26004a80,0 0 60px #ff007f60;
+}
+.panel h3{margin-bottom:1rem;color:#ff007f;}
+.panel canvas{margin-top:1rem;box-shadow:0 0 20px #26004a80,0 0 40px #ff007f40;border-radius:8px;}
 
-    .section {
-      margin-bottom: 2rem;
-    }
+/* Neon Pulse Animation */
+@keyframes neonPulse {
+  0% { box-shadow: 0 0 10px #26004a40,0 0 20px #ff007f20; }
+  50% { box-shadow: 0 0 20px #26004a80,0 0 40px #ff007f40; }
+  100% { box-shadow: 0 0 10px #26004a40,0 0 20px #ff007f20; }
+}
 
-    .section h2 {
-      font-size: 1.8rem;
-      margin-bottom: 1rem;
-      color: #4CAF50;
-      border-bottom: 2px solid #4CAF50;
-      padding-bottom: 0.3rem;
-    }
+/* ---------- Sections ---------- */
+section{padding:4rem 2rem;text-align:center;}
+section h2{
+  font-family:'Rajdhani', sans-serif;
+  font-size:2.5rem;
+  margin-bottom:2rem;
+  color:#26004a;
+  text-transform:uppercase;
+}
+.features{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:2rem;
+}
+.feature-box{
+  background:rgba(38,0,74,0.5);
+  padding:1.5rem;
+  border-radius:12px;
+  transition:.3s;
+  border:1px solid #26004a;
+  animation: neonPulse 3s infinite alternate;
+}
+.feature-box:hover{transform:translateY(-5px);}
+.feature-box h4{margin-bottom:.5rem;color:#ff007f;}
 
-    .info {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-    }
+/* ---------- Footer ---------- */
+footer{
+  background:#0b0c1b;
+  text-align:center;
+  padding:2rem;
+  border-top:1px solid #26004a20;
+  font-size:.9rem;
+  color:#888;
+}
 
-    .info-item {
-      width: 45%;
-      margin-bottom: 1rem;
-    }
+/* ---------- Keyframes ---------- */
+@keyframes flicker{
+  0%,19%,21%,23%,25%,54%,56%,100%{text-shadow:0 0 2px #26004a,0 0 5px #ff007f;}
+  20%,22%,24%,55%{text-shadow:0 0 20px #26004a,0 0 30px #ff007f;}
+}
+@keyframes blink{0%,50%,100%{opacity:1;}25%,75%{opacity:0;}}
 
-    .info-item h3 {
-      margin-bottom: 0.3rem;
-      font-size: 1.2rem;
-    }
-
-    .info-item p {
-      margin: 0;
-      font-size: 1rem;
-    }
-
-    .skills-list, .education-list, .experience-list {
-      list-style: none;
-      padding: 0;
-    }
-
-    .skills-list li, .education-list li, .experience-list li {
-      margin-bottom: 1rem;
-    }
-
-    .experience-item, .education-item {
-      margin-bottom: 1.5rem;
-    }
-
-    .experience-item h3, .education-item h3 {
-      margin-bottom: 0.3rem;
-      font-size: 1.2rem;
-    }
-
-    .experience-item h4, .education-item h4 {
-      margin-bottom: 0.3rem;
-      font-size: 1rem;
-      font-weight: normal;
-    }
-
-    .experience-item p, .education-item p {
-      margin: 0;
-      font-size: 0.9rem;
-      color: #666;
-    }
-
-    @media (max-width: 768px) {
-      .info-item {
-        width: 100%;
-      }
-    }
-  </style>
+/* ---------- Responsive ---------- */
+@media(max-width:768px){.header-title{font-size:3rem;}}
+@media(max-width:480px){.header-title{font-size:2rem;}nav ul{flex-direction:column;gap:1rem;}}
+</style>
 </head>
 <body>
 
-  <!-- Container -->
-  <div class="container">
+<!-- Navbar -->
+<nav>
+  <div class="logo">CC</div>
+  <ul>
+    <li><a href="#dashboard">Dashboard</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
 
-    <!-- Header -->
-    <div class="header">
-      <h1>JAYROLL JAMES ALA</h1>
-      <p>Email: jayrolljames@gmail.com | Phone: 0981-3173-645</p>
-    </div>
+<!-- Header -->
+<header>
+  <canvas id="particles"></canvas>
+  <h1 class="header-title typed-text" id="commandCenter"></h1>
+  <p>Advanced Analytics & Software Dashboard</p>
+</header>
 
-    <!-- Personal Information -->
-    <section class="section">
-      <h2>Personal Information</h2>
-      <div class="info">
-        <div class="info-item">
-          <h3>Address:</h3>
-          <p>123 Main Street, City, Country</p>
-        </div>
-        <div class="info-item">
-          <h3>LinkedIn:</h3>
-          <p><a href="https://www.linkedin.com/in/jayroll-james-ala-1b9486259?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app">linkedin.com/in/jayrolljames</a></p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Skills -->
-    <section class="section">
-      <h2>Skills</h2>
-      <ul class="skills-list">
-        <li>Strong problem-solving and analytical skills</li>
-        <li>Proficient in JavaScript, HTML, CSS, and SQL</li>
-        <li>Experienced with version control tools like Git</li>
-        <li>Familiar with responsive web design techniques</li>
-      </ul>
-    </section>
-
-    <!-- Experience -->
-    <section class="section">
-      <h2>Experience</h2>
-      <div class="experience-list">
-        <div class="experience-item">
-          <h3>Front-End Developer</h3>
-          <h4>ABC Tech Solutions | January 2022 - Present</h4>
-          <p>Developed and maintained web applications, ensuring optimal user experience across various devices. Collaborated with designers and backend developers to build efficient and scalable software solutions.</p>
-        </div>
-        <div class="experience-item">
-          <h3>Web Developer Intern</h3>
-          <h4>XYZ Software Inc. | June 2021 - December 2021</h4>
-          <p>Assisted in the development of e-commerce websites, contributing to both front-end and back-end tasks. Gained valuable experience in full-stack development.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Education -->
-    <section class="section">
-      <h2>Education</h2>
-      <div class="education-list">
-        <div class="education-item">
-          <h3>Bachelor of Science in Computer Science</h3>
-          <h4>University of Example | Graduated May 2021</h4>
-          <p>Relevant Coursework: Web Development, Database Management, Software Engineering</p>
-        </div>
-      </div>
-    </section>
-
+<!-- Dashboard Panels -->
+<section id="dashboard" class="dashboard">
+  <div class="panel">
+    <h3>Users Online</h3>
+    <canvas id="usersChart" height="150"></canvas>
   </div>
+  <div class="panel">
+    <h3>Server Load</h3>
+    <canvas id="serverChart" height="150"></canvas>
+  </div>
+  <div class="panel">
+    <h3>Sales Reports</h3>
+    <canvas id="salesChart" height="150"></canvas>
+  </div>
+  <div class="panel">
+    <h3>Alerts</h3>
+    <canvas id="alertsChart" height="150"></canvas>
+  </div>
+</section>
+
+<!-- Features -->
+<section id="features">
+  <h2>Features</h2>
+  <div class="features">
+    <div class="feature-box">
+      <h4>Real-Time Analytics</h4>
+      <p>Track your data live with instant insights and updates.</p>
+    </div>
+    <div class="feature-box">
+      <h4>Custom Dashboards</h4>
+      <p>Create dashboards that fit your workflow and needs.</p>
+    </div>
+    <div class="feature-box">
+      <h4>Data Security</h4>
+      <p>End-to-end encryption and secure data storage.</p>
+    </div>
+    <div class="feature-box">
+      <h4>Cross-Platform</h4>
+      <p>Access the dashboard from desktop, tablet, and mobile.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section id="contact">
+  <h2>Contact</h2>
+  <p>Email us at <a href="mailto:contact@commandcenter.com">contact@commandcenter.com</a></p>
+</section>
+
+<!-- Footer -->
+<footer>&copy; 2025 Command Center. All rights reserved.</footer>
+
+<!-- Typing Effect -->
+<script>
+const text = "COMMAND CENTER";
+const speed = 150;
+let i = 0;
+function typeWriter(){
+  if(i < text.length){
+    document.getElementById("commandCenter").innerHTML += text.charAt(i);
+    i++;
+    setTimeout(typeWriter,speed);
+  }
+}
+window.onload = typeWriter;
+</script>
+
+<!-- Particles Script -->
+<script>
+const particlesCanvas = document.getElementById('particles');
+particlesCanvas.width = window.innerWidth;
+particlesCanvas.height = window.innerHeight;
+const ctx = particlesCanvas.getContext('2d');
+let particles = [];
+for(let i=0;i<150;i++){
+  particles.push({x:Math.random()*particlesCanvas.width, y:Math.random()*particlesCanvas.height, r:Math.random()*2+1, speed:Math.random()*1+0.2});
+}
+function animateParticles(){
+  ctx.clearRect(0,0,particlesCanvas.width,particlesCanvas.height);
+  particles.forEach(p=>{
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle='rgba(38,0,74,0.7)';
+    ctx.fill();
+    p.y -= p.speed;
+    if(p.y<0)p.y=particlesCanvas.height;
+  });
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+window.addEventListener('resize',()=>{particlesCanvas.width=window.innerWidth;particlesCanvas.height=window.innerHeight;});
+</script>
+
+<!-- Chart.js Example -->
+<script>
+const usersCtx = document.getElementById('usersChart').getContext('2d');
+new Chart(usersCtx,{
+  type:'line',
+  data:{labels:['12AM','4AM','8AM','12PM','4PM','8PM'],datasets:[{label:'Users Online',data:[12,19,8,17,22,14],borderColor:'#26004a',backgroundColor:'#26004a40',fill:true}]} ,
+  options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}
+});
+
+const serverCtx = document.getElementById('serverChart').getContext('2d');
+new Chart(serverCtx,{
+  type:'doughnut',
+  data:{labels:['CPU','Memory','Disk'],datasets:[{label:'Server Load',data:[55,30,15],backgroundColor:['#26004a','#ff007f','#00eaff']}]},
+  options:{responsive:true}
+});
+
+const salesCtx = document.getElementById('salesChart').getContext('2d');
+new Chart(salesCtx,{
+  type:'bar',
+  data:{labels:['Jan','Feb','Mar','Apr','May'],datasets:[{label:'Sales',data:[120,190,300,250,400],backgroundColor:'#26004a'}]},
+  options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}
+});
+
+const alertsCtx = document.getElementById('alertsChart').getContext('2d');
+new Chart(alertsCtx,{
+  type:'polarArea',
+  data:{labels:['Critical','Warning','Info'],datasets:[{label:'Alerts',data:[5,12,8],backgroundColor:['#ff007f','#26004a','#00eaff']}]},
+  options:{responsive:true}
+});
+</script>
 
 </body>
 </html>
