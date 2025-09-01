@@ -3,74 +3,53 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Command Center</title>
+  <title>Data Computing</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
-      margin: 0;
-      height: 100vh;
-      overflow: hidden;
-      background: linear-gradient(135deg, #1e3a8a, #9333ea);
+      background: #0c0f2e;
     }
-    #particles-js {
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      z-index: -1;
+    .gradient-border {
+      border: 2px solid;
+      border-image-source: linear-gradient(45deg, #7f00ff, #e100ff);
+      border-image-slice: 1;
     }
   </style>
 </head>
-<body class="flex flex-col items-center justify-center text-white min-h-screen">
-  <!-- Particle Background -->
-  <div id="particles-js"></div>
-
-  <header class="text-center mb-6 animate-fadeIn">
-    <h1 class="text-4xl font-extrabold mb-2">Command Center</h1>
-    <p class="text-lg opacity-90">Your centralized control dashboard</p>
+<body class="text-white font-sans">
+  <!-- Header -->
+  <header class="flex justify-between items-center px-8 py-4 bg-[#0d123a] shadow-lg">
+    <div class="text-xl font-bold">COMPANY LOGO</div>
+    <nav class="hidden md:flex space-x-6 text-sm">
+      <a href="#" class="hover:text-blue-400">VISIONIC</a>
+      <a href="#" class="hover:text-blue-400">SOLUTION & SERVICE</a>
+      <a href="#" class="hover:text-blue-400">COMPANY</a>
+      <a href="#" class="hover:text-blue-400">CONTACT US</a>
+    </nav>
+    <div class="space-x-4">
+      <a href="#" class="text-sm hover:text-blue-400">LOGIN</a>
+      <a href="#" class="bg-blue-500 px-4 py-2 rounded-lg hover:bg-blue-600">REQUEST DEMO</a>
+    </div>
   </header>
 
-  <section class="w-full max-w-4xl p-6 bg-white bg-opacity-10 rounded-xl shadow-lg backdrop-blur-md animate-fadeIn">
-    <h2 class="text-2xl font-bold mb-4">System Status</h2>
-    <canvas id="statusChart" height="120"></canvas>
+  <!-- Hero Section -->
+  <section class="flex flex-col md:flex-row justify-between items-center px-8 py-16">
+    <!-- Left Text -->
+    <div class="max-w-lg">
+      <h1 class="text-4xl md:text-5xl font-extrabold mb-6">Data Computing</h1>
+      <p class="text-gray-300 mb-6">
+        MONITOR AND CONTROL ANY EQUIPMENT AND ANY 3<sup>RD</sup> PARTY <strong>SOFTWARE SYSTEM</strong>
+      </p>
+      <div class="flex space-x-4">
+        <a href="#" class="bg-blue-500 px-4 py-2 rounded-lg hover:bg-blue-600">REQUEST DEMO</a>
+        <a href="#" class="text-blue-400 hover:underline">FIND OUT MORE</a>
+      </div>
+    </div>
+
+    <!-- Right Illustration -->
+    <div class="mt-10 md:mt-0 md:ml-16">
+      <img src="https://cdn.dribbble.com/users/148603/screenshots/4510346/media/63c4bfa3c8c0d9e61eb034baae7933f0.png" alt="Illustration" class="w-[450px] rounded-xl shadow-2xl gradient-border">
+    </div>
   </section>
-
-  <script>
-    const ctx = document.getElementById('statusChart');
-    new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: ['Active', 'Idle', 'Offline'],
-        datasets: [{
-          data: [60, 25, 15],
-          backgroundColor: ['#34d399', '#fbbf24', '#ef4444'],
-        }]
-      }
-    });
-  </script>
-
-  <!-- Particles.js -->
-  <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
-  <script>
-    particlesJS('particles-js', {
-      particles: {
-        number: { value: 80 },
-        size: { value: 3 },
-        move: { speed: 2 },
-        line_linked: { enable: true, color: '#ffffff' },
-        color: { value: '#ffffff' }
-      },
-      interactivity: {
-        events: { onhover: { enable: true, mode: 'repulse' } }
-      }
-    });
-  </script>
-
-  <style>
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    .animate-fadeIn { animation: fadeIn 1.5s ease-in-out; }
-  </style>
 </body>
 </html>
