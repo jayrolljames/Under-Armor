@@ -1,571 +1,77 @@
-import React, { useMemo, useState } from "react";
-import { motion } from "framer-motion";
-import {
-  LayoutDashboard,
-  Activity,
-  Bell,
-  BarChart3,
-  Users,
-  Settings,
-  HelpCircle,
-  Play,
-  Square,
-  RefreshCcw,
-  ShieldCheck,
-  AlertTriangle,
-  MapPin,
-  LogOut,
-  Search,
-} from "lucide-react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, BarChart, Bar, Legend, PieChart, Pie, Cell } from "recharts";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Command Center</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+  <header class="bg-gray-800 text-white p-4 text-center text-xl font-bold">
+    Command Center Dashboard
+  </header>
 
-// shadcn/ui imports (available in this environment)
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Table, TableHeader, TableRow, TableHead, TableCell, TableBody } from "@/components/ui/table";
-import { Progress } from "@/components/ui/progress";
+  <main class="max-w-6xl mx-auto p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Dashboard Section -->
+    <section class="bg-white shadow-md rounded-xl p-4">
+      <h2 class="text-lg font-semibold mb-2">Dashboard</h2>
+      <p class="text-gray-600">Quick overview of metrics.</p>
+    </section>
 
-// ---- DATA MOCKS ----
-const kpiData = [
-  { label: "Active Incidents", value: 7, change: -14 },
-  { label: "System Uptime", value: 99.97, suffix: "%", change: 0.02 },
-  { label: "Avg Response", value: 2.4, suffix: "m", change: -0.6 },
-  { label: "Open Tickets", value: 18, change: 5 },
-];
+    <!-- Monitoring & Control -->
+    <section class="bg-white shadow-md rounded-xl p-4">
+      <h2 class="text-lg font-semibold mb-2">Monitoring & Control</h2>
+      <p class="text-gray-600">System status and alerts.</p>
+    </section>
 
-const trafficData = [
-  { time: "00:00", value: 120 },
-  { time: "04:00", value: 240 },
-  { time: "08:00", value: 800 },
-  { time: "12:00", value: 650 },
-  { time: "16:00", value: 900 },
-  { time: "20:00", value: 760 },
-  { time: "23:59", value: 540 },
-];
+    <!-- Reports -->
+    <section class="bg-white shadow-md rounded-xl p-4">
+      <h2 class="text-lg font-semibold mb-2">Reports</h2>
+      <p class="text-gray-600">Generate and download reports.</p>
+    </section>
 
-const incidents = [
-  { id: "INC-1045", type: "Network", severity: "High", status: "Investigating", owner: "A. Cruz", updated: "5m" },
-  { id: "INC-1046", type: "Database", severity: "Medium", status: "Mitigating", owner: "D. Santos", updated: "12m" },
-  { id: "INC-1047", type: "Auth", severity: "Critical", status: "Escalated", owner: "J. Reyes", updated: "1m" },
-  { id: "INC-1048", type: "API", severity: "Low", status: "Monitoring", owner: "M. Dizon", updated: "28m" },
-];
+    <!-- Notifications -->
+    <section class="bg-white shadow-md rounded-xl p-4">
+      <h2 class="text-lg font-semibold mb-2">Notifications</h2>
+      <ul class="list-disc pl-5 text-gray-700">
+        <li>New system alert</li>
+        <li>User activity detected</li>
+      </ul>
+    </section>
 
-const alerts = [
-  { id: 1, title: "CPU spike detected on api-02", level: "high", time: "2m ago" },
-  { id: 2, title: "New login from unrecognized location", level: "medium", time: "8m ago" },
-  { id: 3, title: "Backup completed successfully", level: "info", time: "12m ago" },
-];
+    <!-- Analytics -->
+    <section class="bg-white shadow-md rounded-xl p-4 col-span-2">
+      <h2 class="text-lg font-semibold mb-2">Analytics</h2>
+      <canvas id="analyticsChart" class="w-full h-48 bg-gray-50 rounded-md"></canvas>
+    </section>
 
-const usageBars = [
-  { name: "API", value: 86 },
-  { name: "DB", value: 62 },
-  { name: "Cache", value: 48 },
-  { name: "Workers", value: 73 },
-];
+    <!-- Help & Support -->
+    <section class="bg-white shadow-md rounded-xl p-4">
+      <h2 class="text-lg font-semibold mb-2">Help & Support</h2>
+      <p class="text-gray-600">Contact support or view FAQs.</p>
+    </section>
+  </main>
 
-const userRows = [
-  { name: "Admin (You)", role: "Owner", status: "Active", last: "Now" },
-  { name: "Ana Cruz", role: "Operator", status: "Active", last: "1h" },
-  { name: "Jose Reyes", role: "Analyst", status: "Active", last: "12m" },
-  { name: "Mira Dizon", role: "Viewer", status: "Suspended", last: "2d" },
-];
+  <footer class="bg-gray-800 text-white text-center p-4 mt-6">
+    © 2025 Command Center. All rights reserved.
+  </footer>
 
-const COLORS = ["#0ea5e9", "#22c55e", "#f97316", "#a78bfa", "#ef4444"]; // Used by charts; tailwind palette hints
-
-// ---- UI HELPERS ----
-const Section = ({ title, description, children }) => (
-  <Card className="border-none shadow-lg rounded-2xl">
-    <CardHeader>
-      <CardTitle className="text-xl">{title}</CardTitle>
-      {description && <CardDescription>{description}</CardDescription>}
-    </CardHeader>
-    <CardContent>{children}</CardContent>
-  </Card>
-);
-
-const Pill = ({ change }) => (
-  <Badge variant={change >= 0 ? "secondary" : "destructive"} className="rounded-full px-2 py-1 text-xs">
-    {change > 0 ? `▲ ${change}%` : change < 0 ? `▼ ${Math.abs(change)}%` : "—"}
-  </Badge>
-);
-
-const navItems = [
-  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { id: "monitoring", label: "Monitoring & Control", icon: Activity },
-  { id: "notifications", label: "Notifications & Alerts", icon: Bell },
-  { id: "reports", label: "Reports & Analytics", icon: BarChart3 },
-  { id: "users", label: "User Management", icon: Users },
-  { id: "settings", label: "Settings", icon: Settings },
-  { id: "help", label: "Help & Support", icon: HelpCircle },
-];
-
-// ---- MAIN APP ----
-export default function CommandCenterWebsite() {
-  const [active, setActive] = useState("dashboard");
-  const [serviceRunning, setServiceRunning] = useState(true);
-
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white text-slate-900">
-      {/* Shell */}
-      <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr]">
-        {/* Sidebar */}
-        <aside className="lg:min-h-screen border-r bg-white/70 backdrop-blur sticky top-0 p-4">
-          <div className="flex items-center gap-2 mb-6">
-            <ShieldCheck className="h-6 w-6" />
-            <span className="font-semibold">Command Center</span>
-          </div>
-          <nav className="grid gap-1">
-            {navItems.map(({ id, label, icon: Icon }) => (
-              <Button
-                key={id}
-                variant={active === id ? "default" : "ghost"}
-                className="justify-start gap-3 rounded-xl"
-                onClick={() => setActive(id)}
-              >
-                <Icon className="h-4 w-4" /> {label}
-              </Button>
-            ))}
-          </nav>
-          <div className="mt-6 p-3 rounded-xl bg-slate-50 border">
-            <div className="text-xs text-slate-500 mb-2">Service Controls</div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-sm"><Activity className="h-4 w-4"/> Core Workers</div>
-              <Switch checked={serviceRunning} onCheckedChange={setServiceRunning} />
-            </div>
-            <div className="mt-3 flex gap-2">
-              <Button size="sm" variant="secondary" className="rounded-lg"><RefreshCcw className="h-4 w-4 mr-1"/> Restart</Button>
-              <Button size="sm" variant="outline" className="rounded-lg"><Square className="h-4 w-4 mr-1"/> Stop</Button>
-              <Button size="sm" className="rounded-lg"><Play className="h-4 w-4 mr-1"/> Start</Button>
-            </div>
-          </div>
-          <Button variant="ghost" className="mt-8 w-full justify-start gap-2 text-slate-500"><LogOut className="h-4 w-4"/> Logout</Button>
-        </aside>
-
-        {/* Main */}
-        <main className="p-4 lg:p-8">
-          <TopBar />
-          <motion.div
-            key={active}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.25 }}
-            className="grid gap-6"
-          >
-            {active === "dashboard" && <Dashboard />}
-            {active === "monitoring" && <Monitoring />}
-            {active === "notifications" && <Notifications />}
-            {active === "reports" && <Reports />}
-            {active === "users" && <UsersPage />}
-            {active === "settings" && <SettingsPage />}
-            {active === "help" && <HelpPage />}
-          </motion.div>
-        </main>
-      </div>
-    </div>
-  );
-}
-
-function TopBar() {
-  return (
-    <div className="mb-6 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
-      <div>
-        <h1 className="text-2xl font-semibold">Operations Command Center</h1>
-        <p className="text-sm text-slate-500">Real-time visibility, control, and insights</p>
-      </div>
-      <div className="flex items-center gap-2">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-          <Input placeholder="Search incidents, users, systems…" className="pl-9 rounded-xl" />
-        </div>
-        <Button className="rounded-xl">New Incident</Button>
-      </div>
-    </div>
-  );
-}
-
-function KPIGrid() {
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-      {kpiData.map((kpi, i) => (
-        <Card key={i} className="rounded-2xl shadow-sm">
-          <CardHeader className="pb-2">
-            <CardDescription>{kpi.label}</CardDescription>
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-3xl">
-                {kpi.value}
-                {kpi.suffix && <span className="text-base text-slate-400 ml-1">{kpi.suffix}</span>}
-              </CardTitle>
-              {typeof kpi.change !== "undefined" && <Pill change={kpi.change} />}
-            </div>
-          </CardHeader>
-          <CardContent>
-            <Progress value={Math.min(100, (Number(kpi.value) / 100) * 100)} className="rounded-full h-2" />
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  );
-}
-
-function Dashboard() {
-  return (
-    <div className="grid gap-6">
-      <KPIGrid />
-
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <Section title="Traffic (24h)" description="Requests per time bucket">
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={trafficData} margin={{ left: 0, right: 0, top: 10, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="area" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.35} />
-                    <stop offset="100%" stopColor="#3b82f6" stopOpacity={0.05} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="time" />
-                <YAxis />
-                <Tooltip />
-                <Area type="monotone" dataKey="value" stroke="#3b82f6" fill="url(#area)" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </Section>
-
-        <Section title="Systems Load" description="Component utilization">
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={usageBars}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="value" radius={[8, 8, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </Section>
-
-        <Section title="Alerts" description="Live signal">
-          <ul className="grid gap-3">
-            {alerts.map((a) => (
-              <li key={a.id} className="flex items-start gap-3 rounded-xl border p-3">
-                {a.level === "high" && <AlertTriangle className="h-5 w-5"/>}
-                {a.level === "medium" && <Bell className="h-5 w-5"/>}
-                {a.level === "info" && <ShieldCheck className="h-5 w-5"/>}
-                <div className="flex-1">
-                  <div className="text-sm font-medium">{a.title}</div>
-                  <div className="text-xs text-slate-500">{a.time}</div>
-                </div>
-                <Button size="sm" variant="outline" className="rounded-lg">Acknowledge</Button>
-              </li>
-            ))}
-          </ul>
-        </Section>
-      </div>
-
-      <Section title="Open Incidents" description="Track, triage, resolve">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>ID</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Severity</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Owner</TableHead>
-              <TableHead>Updated</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {incidents.map((i) => (
-              <TableRow key={i.id}>
-                <TableCell className="font-medium">{i.id}</TableCell>
-                <TableCell>{i.type}</TableCell>
-                <TableCell>
-                  <Badge variant={i.severity === "Critical" ? "destructive" : i.severity === "High" ? "default" : "secondary"}>
-                    {i.severity}
-                  </Badge>
-                </TableCell>
-                <TableCell>{i.status}</TableCell>
-                <TableCell>{i.owner}</TableCell>
-                <TableCell>{i.updated}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Section>
-    </div>
-  );
-}
-
-function Monitoring() {
-  const lineData = useMemo(
-    () => Array.from({ length: 14 }).map((_, i) => ({ name: `T${i + 1}`, api: 40 + Math.round(Math.random() * 60), db: 30 + Math.round(Math.random() * 50) })),
-    []
-  );
-
-  return (
-    <div className="grid gap-6">
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        <Section title="Live Latency" description="API vs DB (ms)">
-          <div className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={lineData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Line type="monotone" dataKey="api" stroke="#2563eb" dot={false} />
-                <Line type="monotone" dataKey="db" stroke="#16a34a" dot={false} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </Section>
-        <Section title="Geo Status" description="Regional health (mock)">
-          <div className="flex items-center gap-4">
-            <MapPin className="h-5 w-5" />
-            <div className="text-sm text-slate-600">APAC: <Badge>Healthy</Badge></div>
-            <div className="text-sm text-slate-600">EMEA: <Badge variant="secondary">Degraded</Badge></div>
-            <div className="text-sm text-slate-600">AMER: <Badge>Healthy</Badge></div>
-          </div>
-          <div className="mt-4 h-64 flex items-center justify-center border rounded-xl">Map placeholder</div>
-        </Section>
-      </div>
-
-      <Section title="Command Actions" description="Execute safe operations">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {[
-            { label: "Scale Workers +1", icon: Activity },
-            { label: "Rotate Secrets", icon: ShieldCheck },
-            { label: "Flush Cache", icon: RefreshCcw },
-            { label: "Restart API", icon: Play },
-          ].map((a, idx) => (
-            <Button key={idx} className="rounded-xl" variant="outline">
-              <a.icon className="h-4 w-4 mr-2" /> {a.label}
-            </Button>
-          ))}
-        </div>
-      </Section>
-    </div>
-  );
-}
-
-function Notifications() {
-  return (
-    <div className="grid gap-6">
-      <Section title="Alert Feed" description="Latest alerts and acknowledgements">
-        <ul className="grid gap-3">
-          {alerts.map((a) => (
-            <li key={a.id} className="flex items-start gap-3 p-3 border rounded-xl">
-              {a.level === "high" && <AlertTriangle className="h-5 w-5"/>}
-              {a.level === "medium" && <Bell className="h-5 w-5"/>}
-              {a.level === "info" && <ShieldCheck className="h-5 w-5"/>}
-              <div className="flex-1">
-                <div className="text-sm font-medium">{a.title}</div>
-                <div className="text-xs text-slate-500">{a.time}</div>
-              </div>
-              <div className="flex gap-2">
-                <Button size="sm" variant="outline" className="rounded-lg">Acknowledge</Button>
-                <Button size="sm" className="rounded-lg">Create Ticket</Button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </Section>
-
-      <Section title="Rules & Escalations" description="Example rule toggles">
-        <div className="grid gap-4">
-          {[
-            { name: "CPU > 85% for 5m", enabled: true },
-            { name: "P95 latency > 800ms", enabled: true },
-            { name: "Error rate > 2%", enabled: false },
-            { name: "Login anomalies", enabled: true },
-          ].map((r, i) => (
-            <div key={i} className="flex items-center justify-between p-3 border rounded-xl">
-              <div className="text-sm">{r.name}</div>
-              <Switch defaultChecked={r.enabled} />
-            </div>
-          ))}
-        </div>
-      </Section>
-    </div>
-  );
-}
-
-function Reports() {
-  const pieData = [
-    { name: "Resolved", value: 57 },
-    { name: "Mitigating", value: 22 },
-    { name: "Escalated", value: 8 },
-    { name: "Investigating", value: 13 },
-  ];
-
-  return (
-    <div className="grid gap-6">
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        <Section title="Incident Summary" description="Distribution by status (last 7 days)">
-          <div className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie dataKey="value" data={pieData} outerRadius={110}>
-                  {pieData.map((_, idx) => (
-                    <Cell key={idx} fill={COLORS[idx % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </Section>
-        <Section title="Throughput" description="Requests/min over time">
-          <div className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={trafficData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="time" />
-                <YAxis />
-                <Tooltip />
-                <Area type="monotone" dataKey="value" stroke="#0ea5e9" fillOpacity={0.2} fill="#0ea5e9" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </Section>
-      </div>
-
-      <Section title="Report Builder" description="Export CSV/PDF (mock)">
-        <div className="grid sm:grid-cols-3 gap-3">
-          <Input placeholder="Date range (e.g., Last 7 days)" className="rounded-xl" />
-          <Input placeholder="Filters (service:api severity:high)" className="rounded-xl" />
-          <div className="flex gap-2">
-            <Button className="rounded-xl">Export CSV</Button>
-            <Button variant="outline" className="rounded-xl">Export PDF</Button>
-          </div>
-        </div>
-      </Section>
-    </div>
-  );
-}
-
-function UsersPage() {
-  return (
-    <div className="grid gap-6">
-      <Section title="Team" description="Roles & recent activity">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>User</TableHead>
-              <TableHead>Role</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Last Active</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {userRows.map((u, i) => (
-              <TableRow key={i}>
-                <TableCell className="font-medium">{u.name}</TableCell>
-                <TableCell><Badge>{u.role}</Badge></TableCell>
-                <TableCell>
-                  <Badge variant={u.status === "Active" ? "default" : "secondary"}>{u.status}</Badge>
-                </TableCell>
-                <TableCell>{u.last}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Section>
-
-      <Section title="Invite User" description="Send an email invite">
-        <div className="grid sm:grid-cols-[1fr_auto_auto] gap-3">
-          <Input placeholder="name@company.com" className="rounded-xl" />
-          <Input placeholder="Role (viewer/operator/admin)" className="rounded-xl" />
-          <Button className="rounded-xl">Send Invite</Button>
-        </div>
-      </Section>
-    </div>
-  );
-}
-
-function SettingsRow({ title, desc }) {
-  return (
-    <div className="flex items-center justify-between p-3 border rounded-xl">
-      <div>
-        <div className="text-sm font-medium">{title}</div>
-        <div className="text-xs text-slate-500">{desc}</div>
-      </div>
-      <Switch defaultChecked />
-    </div>
-  );
-}
-
-function SettingsPage() {
-  return (
-    <div className="grid gap-6">
-      <Section title="Security" description="Authentication & access">
-        <div className="grid gap-3">
-          <SettingsRow title="Require MFA" desc="All users must enable multi-factor auth" />
-          <SettingsRow title="SSO (SAML/OIDC)" desc="Enable single sign-on with your IdP" />
-          <SettingsRow title="Session Timeout" desc="Auto logout after inactivity" />
-        </div>
-      </Section>
-
-      <Section title="Integrations" description="Connect external services">
-        <div className="grid sm:grid-cols-2 gap-3">
-          <div className="p-3 border rounded-xl">
-            <div className="font-medium">Slack</div>
-            <p className="text-xs text-slate-500">Send alerts to a channel</p>
-            <Button size="sm" className="mt-2 rounded-lg">Connect</Button>
-          </div>
-          <div className="p-3 border rounded-xl">
-            <div className="font-medium">PagerDuty</div>
-            <p className="text-xs text-slate-500">On-call routing</p>
-            <Button size="sm" className="mt-2 rounded-lg">Connect</Button>
-          </div>
-        </div>
-      </Section>
-    </div>
-  );
-}
-
-function HelpPage() {
-  return (
-    <div className="grid gap-6">
-      <Section title="Knowledge Base" description="Quick answers">
-        <ul className="grid sm:grid-cols-2 gap-3">
-          {[
-            "What is an incident?",
-            "How to acknowledge alerts",
-            "Setting up SSO",
-            "Creating scheduled reports",
-            "Role permissions matrix",
-            "API rate limits",
-          ].map((q, i) => (
-            <li key={i} className="p-3 border rounded-xl hover:bg-slate-50 cursor-pointer text-sm">{q}</li>
-          ))}
-        </ul>
-      </Section>
-
-      <Section title="Support" description="We’re here to help">
-        <div className="grid sm:grid-cols-3 gap-3">
-          <div className="p-3 border rounded-xl">
-            <div className="font-medium mb-1">Email</div>
-            <div className="text-sm text-slate-600">support@yourorg.com</div>
-          </div>
-          <div className="p-3 border rounded-xl">
-            <div className="font-medium mb-1">Live Chat</div>
-            <div className="text-sm text-slate-600">Weekdays 9:00–18:00</div>
-          </div>
-          <div className="p-3 border rounded-xl">
-            <div className="font-medium mb-1">Status Page</div>
-            <div className="text-sm text-slate-600">status.yourorg.com</div>
-          </div>
-        </div>
-      </Section>
-    </div>
-  );
-}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const ctx = document.getElementById('analyticsChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+        datasets: [{
+          label: 'System Load',
+          data: [12, 19, 10, 17, 22],
+          borderColor: 'rgb(59,130,246)',
+          fill: false
+        }]
+      },
+      options: { responsive: true }
+    });
+  </script>
+</body>
+</html>
